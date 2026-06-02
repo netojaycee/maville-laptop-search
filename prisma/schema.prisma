@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Laptop {
+  id                    String    @id @default(cuid())
+  slug                  String    @unique
+  brand                 String
+  model                 String
+  cpuName               String
+  cpuGeneration         String?
+  ram                   Int
+  maxRam                Int?
+  ramUpgradeable        Boolean   @default(false)
+  storage               String
+  storageType           String?
+  additionalSsdSlot     Boolean   @default(false)
+  gpu                   String
+  batteryHealth         String?
+  estimatedBatteryHours Float?
+  weight                Float?
+  touchscreen           Boolean   @default(false)
+  backlitKeyboard       Boolean   @default(false)
+  fingerprintReader     Boolean   @default(false)
+  chargerIncluded       Boolean   @default(true)
+  keyboardType          String?
+  condition             String
+  price                 Int
+  availability          String    @default("In Stock")
+  images                String[]
+  gamingScore           Int?
+  editingScore          Int?
+  programmingScore      Int?
+  batteryScore          Int?
+  views                 Int       @default(0)
+  featured              Boolean   @default(false)
+  archived              Boolean   @default(false)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model QueryLog {
+  id          String   @id @default(cuid())
+  useCase     String
+  budgetMin   Int
+  budgetMax   Int
+  resultCount Int
+  createdAt   DateTime @default(now())
+}
