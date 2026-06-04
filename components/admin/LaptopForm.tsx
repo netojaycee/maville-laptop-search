@@ -14,33 +14,33 @@ import { useState } from 'react'
 import Image from 'next/image'
 
 const schema = z.object({
-  brand: z.string().min(1, 'Required'),
-  model: z.string().min(1, 'Required'),
-  cpuName: z.string().min(1, 'Required'),
-  cpuGeneration: z.string().optional(),
-  ram: z.coerce.number().int().positive(),
-  maxRam: z.coerce.number().int().positive().optional(),
-  ramUpgradeable: z.boolean().default(false),
-  storage: z.string().min(1, 'Required'),
-  storageType: z.string().optional(),
-  additionalSsdSlot: z.boolean().default(false),
-  gpu: z.string().min(1, 'Required'),
-  batteryHealth: z.string().optional(),
+  brand:                 z.string().min(1, 'Required'),
+  model:                 z.string().min(1, 'Required'),
+  price:                 z.coerce.number().int().positive('Required'),
+  condition:             z.enum(['New', 'Refurbished', 'Used', 'Very Good']),
+  cpuName:               z.string().optional(),
+  cpuGeneration:         z.string().optional(),
+  ram:                   z.coerce.number().int().min(0).optional(),
+  maxRam:                z.coerce.number().int().positive().optional(),
+  ramUpgradeable:        z.boolean().default(false),
+  storage:               z.string().optional(),
+  storageType:           z.string().optional(),
+  additionalSsdSlot:     z.boolean().default(false),
+  gpu:                   z.string().optional(),
+  batteryHealth:         z.string().optional(),
   estimatedBatteryHours: z.coerce.number().optional(),
-  weight: z.coerce.number().optional(),
-  touchscreen: z.boolean().default(false),
-  backlitKeyboard: z.boolean().default(false),
-  fingerprintReader: z.boolean().default(false),
-  chargerIncluded: z.boolean().default(true),
-  keyboardType: z.string().optional(),
-  condition: z.enum(['New', 'Refurbished', 'Used', 'Very Good']),
-  price: z.coerce.number().int().positive(),
-  availability: z.enum(['In Stock', 'Low Stock', 'Out of Stock']).default('In Stock'),
-  gamingScore: z.coerce.number().int().min(0).max(100).optional(),
-  editingScore: z.coerce.number().int().min(0).max(100).optional(),
-  programmingScore: z.coerce.number().int().min(0).max(100).optional(),
-  batteryScore: z.coerce.number().int().min(0).max(100).optional(),
-  featured: z.boolean().default(false),
+  weight:                z.coerce.number().optional(),
+  touchscreen:           z.boolean().default(false),
+  backlitKeyboard:       z.boolean().default(false),
+  fingerprintReader:     z.boolean().default(false),
+  chargerIncluded:       z.boolean().default(true),
+  keyboardType:          z.string().optional(),
+  availability:          z.enum(['In Stock', 'Low Stock', 'Out of Stock']).default('In Stock'),
+  gamingScore:           z.coerce.number().int().min(0).max(100).optional(),
+  editingScore:          z.coerce.number().int().min(0).max(100).optional(),
+  programmingScore:      z.coerce.number().int().min(0).max(100).optional(),
+  batteryScore:          z.coerce.number().int().min(0).max(100).optional(),
+  featured:              z.boolean().default(false),
 })
 
 type FormData = z.infer<typeof schema>
@@ -144,7 +144,7 @@ export function LaptopForm({ laptop }: LaptopFormProps) {
           <Field label="Model *" error={errors.model?.message}>
             <Input {...register('model')} placeholder="Latitude 5490" className={inputClass} />
           </Field>
-          <Field label="CPU *" error={errors.cpuName?.message}>
+          <Field label="CPU" error={errors.cpuName?.message}>
             <Input {...register('cpuName')} placeholder="Intel Core i7-8650U" className={inputClass} />
           </Field>
           <Field label="CPU Generation" error={errors.cpuGeneration?.message}>
@@ -157,13 +157,13 @@ export function LaptopForm({ laptop }: LaptopFormProps) {
       <section className="rounded-xl border border-[#1E2530] bg-[#0F1318] p-6">
         <h2 className="mb-4 font-semibold text-white">Memory & Storage</h2>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="RAM (GB) *" error={errors.ram?.message}>
+          <Field label="RAM (GB)" error={errors.ram?.message}>
             <Input {...register('ram')} type="number" placeholder="8" className={inputClass} />
           </Field>
           <Field label="Max RAM (GB)" error={errors.maxRam?.message}>
             <Input {...register('maxRam')} type="number" placeholder="32" className={inputClass} />
           </Field>
-          <Field label="Storage *" error={errors.storage?.message}>
+          <Field label="Storage" error={errors.storage?.message}>
             <Input {...register('storage')} placeholder="256GB SSD" className={inputClass} />
           </Field>
           <Field label="Storage Type" error={errors.storageType?.message}>
@@ -180,7 +180,7 @@ export function LaptopForm({ laptop }: LaptopFormProps) {
       <section className="rounded-xl border border-[#1E2530] bg-[#0F1318] p-6">
         <h2 className="mb-4 font-semibold text-white">GPU & Features</h2>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="GPU *" error={errors.gpu?.message}>
+          <Field label="GPU" error={errors.gpu?.message}>
             <Input {...register('gpu')} placeholder="Intel UHD 620" className={inputClass} />
           </Field>
           <Field label="Weight (kg)" error={errors.weight?.message}>

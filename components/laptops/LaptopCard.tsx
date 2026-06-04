@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Laptop } from '@/types'
@@ -10,6 +9,7 @@ import { ScoreRing } from './ScoreRing'
 import { BookmarkButton } from '@/components/shared/BookmarkButton'
 import { WhatsAppButton } from '@/components/shared/WhatsAppButton'
 import { useCompareStore } from '@/store/useCompareStore'
+import { useLaptopQuickViewStore } from '@/store/useLaptopQuickViewStore'
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
 
 interface LaptopCardProps {
@@ -23,6 +23,7 @@ export function LaptopCard({ laptop, score, delay = 0 }: LaptopCardProps) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 })
   const [hovered, setHovered] = useState(false)
   const { add, remove, isSelected, canAdd } = useCompareStore()
+  const openQuickView = useLaptopQuickViewStore((s) => s.open)
   const selected = isSelected(laptop.id)
   const displayScore = score ?? laptop.programmingScore ?? laptop.gamingScore ?? laptop.editingScore ?? null
   const image = laptop.images?.[0]
@@ -48,17 +49,18 @@ export function LaptopCard({ laptop, score, delay = 0 }: LaptopCardProps) {
     >
       <div
         ref={cardRef}
-        className="group relative flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--card)] transition-shadow hover:shadow-[0_0_30px_rgba(0,212,255,0.08)]"
+        className="group relative flex w-full flex-col rounded-2xl border border-[var(--border)] bg-[var(--card)] transition-shadow hover:shadow-[0_0_30px_rgba(0,212,255,0.08)]"
         style={{
-          transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+          transform: hovered ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` : undefined,
           transition: hovered ? 'transform 0.1s ease' : 'transform 0.4s ease',
+          willChange: hovered ? 'transform' : undefined,
         }}
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => { setTilt({ x: 0, y: 0 }); setHovered(false) }}
       >
         {/* Image */}
-        <Link href={`/laptops/${laptop.slug}`} className="block">
+        <button onClick={() => openQuickView(laptop)} className="block w-full text-left">
           <div className="relative h-44 overflow-hidden rounded-t-2xl bg-[var(--secondary)]">
             {image ? (
               <Image
@@ -103,18 +105,18 @@ export function LaptopCard({ laptop, score, delay = 0 }: LaptopCardProps) {
               <ArrowsRightLeftIcon className="h-3.5 w-3.5" />
             </button>
           </div>
-        </Link>
+        </button>
 
         {/* Content */}
         <div className="flex flex-1 flex-col gap-3 p-4">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
               <p className="text-xs font-medium text-[var(--primary)]">{laptop.brand}</p>
-              <Link href={`/laptops/${laptop.slug}`}>
+              <button onClick={() => openQuickView(laptop)} className="text-left">
                 <h3 className="truncate text-sm font-semibold text-[var(--foreground)] hover:text-[var(--primary)]">
                   {laptop.model}
                 </h3>
-              </Link>
+              </button>
             </div>
             <BookmarkButton laptopId={laptop.id} />
           </div>
@@ -122,11 +124,11 @@ export function LaptopCard({ laptop, score, delay = 0 }: LaptopCardProps) {
           {/* Specs */}
           <div className="grid grid-cols-2 gap-1">
             {[
-              laptop.cpuName.split(' ').slice(0, 3).join(' '),
-              `${laptop.ram}GB RAM`,
-              laptop.storage,
-              laptop.gpu.split(' ').slice(0, 3).join(' '),
-            ].map((spec, i) => (
+              laptop.cpuName ? laptop.cpuName.split(' ').slice(0, 3).join(' ') : null,
+              laptop.ram ? `${laptop.ram}GB RAM` : null,
+              laptop.storage || null,
+              laptop.gpu ? laptop.gpu.split(' ').slice(0, 3).join(' ') : null,
+            ].filter(Boolean).map((spec, i) => (
               <span key={i} className="truncate rounded bg-[var(--secondary)] px-2 py-1 font-mono text-[10px] text-[var(--muted-foreground)]">
                 {spec}
               </span>
@@ -148,12 +150,12 @@ export function LaptopCard({ laptop, score, delay = 0 }: LaptopCardProps) {
 
           {/* CTA */}
           <div className="flex gap-2 border-t border-[var(--border)] pt-3">
-            <Link
-              href={`/laptops/${laptop.slug}`}
+            <button
+              onClick={() => openQuickView(laptop)}
               className="flex-1 rounded-lg bg-[var(--secondary)] py-2 text-center text-xs font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--border)]"
             >
               View Details
-            </Link>
+            </button>
             <WhatsAppButton laptop={laptop} />
           </div>
         </div>

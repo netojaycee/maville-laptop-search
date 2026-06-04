@@ -37,7 +37,7 @@ interface RecommendationStore {
 const defaultPreferences: Partial<UserPreferences> = {
   budgetMin:            50000,
   budgetMax:            300000,
-  useCase:              '',
+  useCases:             [],
   performancePreference: 'balanced',
   portability:          'any',
   requiredFeatures:     [],

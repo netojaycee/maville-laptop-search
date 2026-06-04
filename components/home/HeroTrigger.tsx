@@ -1,15 +1,22 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useRecommendationStore } from '@/store/useRecommendationStore'
 import { analytics } from '@/lib/analytics'
 import { motion } from 'framer-motion'
 
 export function HeroTrigger() {
-  const { open } = useRecommendationStore()
+  const router = useRouter()
+  const { open, startFresh, results } = useRecommendationStore()
 
   const handleClick = () => {
     analytics.recommendationStarted()
-    open()
+    if (results.length > 0) {
+      router.push('/results')
+    } else {
+      startFresh()
+      open()
+    }
   }
 
   return (
@@ -19,7 +26,9 @@ export function HeroTrigger() {
       whileTap={{ scale: 0.98 }}
       className="relative overflow-hidden rounded-xl bg-[#00D4FF] px-8 py-3 font-semibold text-black shadow-[0_0_30px_rgba(0,212,255,0.4)] transition-shadow hover:shadow-[0_0_40px_rgba(0,212,255,0.6)]"
     >
-      <span className="relative z-10">Find My Laptop →</span>
+      <span className="relative z-10">
+        {results.length > 0 ? 'View My Matches →' : 'Find My Laptop →'}
+      </span>
     </motion.button>
   )
 }

@@ -42,7 +42,7 @@ export default async function LaptopsPage() {
   const [initialData, brands] = await Promise.all([getInitialLaptops(), getBrands()])
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl overflow-x-hidden px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8">
         <h1 className="font-display text-4xl font-bold text-[var(--foreground)]">Browse Laptops</h1>
         <p className="mt-2 text-[var(--muted-foreground)]">

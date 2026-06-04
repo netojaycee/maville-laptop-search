@@ -6,7 +6,7 @@ import { z } from 'zod'
 const preferencesSchema = z.object({
   budgetMin: z.number().int().min(0),
   budgetMax: z.number().int().positive(),
-  useCase: z.string().min(1),
+  useCases: z.array(z.string()).min(1),
   performancePreference: z.enum(['maximum', 'balanced', 'battery']),
   portability: z.enum(['lightweight', 'balanced', 'any']),
   requiredFeatures: z.array(z.string()).default([]),
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
 
     await prisma.queryLog.create({
       data: {
-        useCase: prefs.useCase,
+        useCase: prefs.useCases.join(','),
         budgetMin: prefs.budgetMin,
         budgetMax: prefs.budgetMax,
         resultCount: results.length,

@@ -54,7 +54,7 @@ export interface QueryLog {
 export interface UserPreferences {
   budgetMin: number
   budgetMax: number
-  useCase: string
+  useCases: string[]
   performancePreference: 'maximum' | 'balanced' | 'battery'
   portability: 'lightweight' | 'balanced' | 'any'
   requiredFeatures: string[]

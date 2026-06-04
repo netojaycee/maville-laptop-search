@@ -1,21 +1,34 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useBookmarks } from '@/hooks/useBookmarks'
 import { useCompareStore } from '@/store/useCompareStore'
-import { BookmarkIcon, ArrowsRightLeftIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { useRecommendationStore } from '@/store/useRecommendationStore'
+import {
+  BookmarkIcon,
+  ArrowsRightLeftIcon,
+  Bars3Icon,
+  XMarkIcon,
+  SparklesIcon,
+} from '@heroicons/react/24/outline'
 import { ThemeToggle } from './ThemeToggle'
 
 export function Navbar() {
-  const [open, setOpen] = useState(false)
-  const { count: bookmarkCount } = useBookmarks()
-  const { selectedIds } = useCompareStore()
+  const [open, setOpen]       = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  const { count: bookmarkCount }  = useBookmarks()
+  const { selectedIds }           = useCompareStore()
+  const matchCount                = useRecommendationStore((s) => s.results.length)
+
+  // Avoid hydration mismatch — sessionStorage isn't available on the server
+  useEffect(() => setMounted(true), [])
 
   const navLinks = [
     { href: '/laptops', label: 'Browse' },
-    { href: '/compare', label: 'Compare' },
-    { href: '/saved', label: 'Saved' },
+    { href: '/compare',  label: 'Compare' },
+    { href: '/saved',    label: 'Saved' },
   ]
 
   return (
@@ -40,9 +53,24 @@ export function Navbar() {
           ))}
         </div>
 
-        {/* Icons */}
+        {/* Icon row */}
         <div className="flex items-center gap-1">
           <ThemeToggle />
+
+          {/* Matches indicator — only shown after mount when results exist */}
+          {mounted && matchCount > 0 && (
+            <Link
+              href="/results"
+              className="relative flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[var(--primary)] transition-colors hover:bg-[var(--primary)]/10"
+              aria-label={`View ${matchCount} laptop matches`}
+            >
+              <SparklesIcon className="h-4 w-4" />
+              <span className="hidden text-xs font-semibold sm:inline">My Matches</span>
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--primary)] text-[10px] font-bold text-[var(--primary-foreground)]">
+                {matchCount}
+              </span>
+            </Link>
+          )}
 
           <Link
             href="/compare"
@@ -94,6 +122,16 @@ export function Navbar() {
               {l.label}
             </Link>
           ))}
+          {mounted && matchCount > 0 && (
+            <Link
+              href="/results"
+              className="flex items-center gap-2 py-2 text-sm font-medium text-[var(--primary)]"
+              onClick={() => setOpen(false)}
+            >
+              <SparklesIcon className="h-4 w-4" />
+              My Matches ({matchCount})
+            </Link>
+          )}
         </div>
       )}
     </header>

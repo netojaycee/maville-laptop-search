@@ -1,29 +1,28 @@
 import { Laptop, UserPreferences, ScoredLaptop, ScoreBreakdown } from '@/types'
 
-function calculatePerformance(laptop: Laptop, useCase: string): number {
-  const useCaseScoreMap: Record<string, keyof Pick<Laptop, 'gamingScore' | 'editingScore' | 'programmingScore' | 'batteryScore'>> = {
-    gaming: 'gamingScore',
-    editing: 'editingScore',
-    programming: 'programmingScore',
-    school: 'batteryScore',
-    office: 'programmingScore',
-    design: 'editingScore',
-  }
+const USE_CASE_SCORE_MAP: Record<string, keyof Pick<Laptop, 'gamingScore' | 'editingScore' | 'programmingScore' | 'batteryScore'>> = {
+  gaming: 'gamingScore',
+  editing: 'editingScore',
+  programming: 'programmingScore',
+  school: 'batteryScore',
+  office: 'programmingScore',
+  design: 'editingScore',
+}
 
-  const scoreField = useCaseScoreMap[useCase]
-
+function scoreForUseCase(laptop: Laptop, useCase: string): number {
   if (useCase === 'general') {
-    const scores = [laptop.gamingScore, laptop.editingScore, laptop.programmingScore, laptop.batteryScore].filter(Boolean) as number[]
+    const scores = [laptop.gamingScore, laptop.editingScore, laptop.programmingScore, laptop.batteryScore].filter((s) => s != null) as number[]
     if (scores.length === 0) return estimatePerformanceFromSpecs(laptop)
-    const avg = scores.reduce((a, b) => a + b, 0) / scores.length
-    return Math.round((avg / 100) * 30)
+    return Math.round((scores.reduce((a, b) => a + b, 0) / scores.length / 100) * 30)
   }
-
-  if (scoreField && laptop[scoreField] != null) {
-    return Math.round(((laptop[scoreField] as number) / 100) * 30)
-  }
-
+  const field = USE_CASE_SCORE_MAP[useCase]
+  if (field && laptop[field] != null) return Math.round(((laptop[field] as number) / 100) * 30)
   return estimatePerformanceFromSpecs(laptop)
+}
+
+function calculatePerformance(laptop: Laptop, useCases: string[]): number {
+  if (!useCases || useCases.length === 0) return estimatePerformanceFromSpecs(laptop)
+  return Math.max(...useCases.map((uc) => scoreForUseCase(laptop, uc)))
 }
 
 function estimatePerformanceFromSpecs(laptop: Laptop): number {
@@ -32,11 +31,12 @@ function estimatePerformanceFromSpecs(laptop: Laptop): number {
   if (gen >= 12) score += 8
   else if (gen >= 10) score += 5
   else if (gen >= 8) score += 2
-  if (laptop.ram >= 32) score += 5
-  else if (laptop.ram >= 16) score += 3
-  else if (laptop.ram >= 8) score += 1
-  const gpu = laptop.gpu.toLowerCase()
-  if (!gpu.includes('intel') && !gpu.includes('amd radeon') && !gpu.includes('uhd')) score += 4
+  const ram = laptop.ram ?? 0
+  if (ram >= 32) score += 5
+  else if (ram >= 16) score += 3
+  else if (ram >= 8) score += 1
+  const gpu = (laptop.gpu ?? '').toLowerCase()
+  if (gpu && !gpu.includes('intel') && !gpu.includes('amd radeon') && !gpu.includes('uhd')) score += 4
   return Math.min(score, 30)
 }
 
@@ -100,29 +100,26 @@ function calculatePortability(weight: number | null, portability: string): numbe
 
 function generateWarnings(laptop: Laptop, prefs: UserPreferences): string[] {
   const warnings: string[] = []
-  const gpu = laptop.gpu.toLowerCase()
+  const gpu = (laptop.gpu ?? '').toLowerCase()
   const isIntegrated = gpu.includes('intel uhd') || gpu.includes('intel iris') || gpu.includes('intel hd')
+  const useCases = prefs.useCases ?? []
 
-  if (prefs.useCase === 'gaming') {
+  if (useCases.includes('gaming')) {
     if (isIntegrated) warnings.push('This laptop has integrated graphics — not ideal for gaming')
     if (prefs.budgetMax < 150000) warnings.push('Your budget may be very tight for a gaming laptop')
   }
 
-  if (prefs.useCase === 'editing' || prefs.useCase === 'design') {
-    if (laptop.ram < 16) warnings.push('16GB RAM is recommended for smooth video editing')
+  if (useCases.includes('editing') || useCases.includes('design')) {
+    if ((laptop.ram ?? 0) < 16) warnings.push('16GB RAM is recommended for smooth video editing')
     if (isIntegrated) warnings.push('A dedicated GPU is recommended for video editing')
   }
 
-  if (!laptop.ramUpgradeable && laptop.ram < 16) {
+  if (!laptop.ramUpgradeable && (laptop.ram ?? 0) < 16 && (laptop.ram ?? 0) > 0) {
     warnings.push('RAM cannot be expanded — consider a higher RAM configuration')
   }
 
   if (laptop.estimatedBatteryHours != null && laptop.estimatedBatteryHours < 4) {
     warnings.push('Battery life may be limited')
-  }
-
-  if (!laptop.batteryHealth) {
-    warnings.push('Battery condition not assessed')
   }
 
   if (prefs.portability === 'lightweight' && laptop.weight && laptop.weight > 2.5) {
@@ -139,7 +136,8 @@ function generateWarnings(laptop: Laptop, prefs: UserPreferences): string[] {
 function generateUpgrades(laptop: Laptop, prefs: UserPreferences): string[] {
   const suggestions: string[] = []
 
-  if (laptop.ram < 16 && laptop.ramUpgradeable && ['programming', 'editing', 'design'].includes(prefs.useCase)) {
+  const useCases = prefs.useCases ?? []
+  if ((laptop.ram ?? 0) < 16 && laptop.ramUpgradeable && useCases.some((uc) => ['programming', 'editing', 'design'].includes(uc))) {
     suggestions.push(`Consider upgrading to ${laptop.maxRam || 32}GB RAM for better performance`)
   }
 
@@ -176,7 +174,7 @@ export function scoreLaptop(laptop: Laptop, prefs: UserPreferences): ScoredLapto
     return null
   }
 
-  const performance = calculatePerformance(laptop, prefs.useCase)
+  const performance = calculatePerformance(laptop, prefs.useCases ?? [])
   const budget = budgetScore
   const features = calculateFeatures(laptop, prefs.requiredFeatures)
   const battery = calculateBattery(laptop, prefs.performancePreference)
