@@ -29,7 +29,7 @@ export function InventoryActions({ laptop }: InventoryActionsProps) {
   return (
     <div className="flex items-center gap-2">
       <Link
-        href={`/admin/inventory/${laptop.id}`}
+        href={`/onyami/inventory/${laptop.id}`}
         className="rounded-lg bg-[#161B23] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1E2530] transition-colors"
       >
         Edit

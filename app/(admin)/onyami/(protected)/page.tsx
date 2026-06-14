@@ -47,7 +47,7 @@ export default async function AdminDashboard() {
           </div>
         ))}
         <Link
-          href="/admin/inventory/new"
+          href="/onyami/inventory/new"
           className="flex items-center justify-center rounded-xl border border-dashed border-[#1E2530] bg-[#0F1318] p-5 text-sm text-[#00D4FF] hover:border-[#00D4FF] hover:bg-[#00D4FF]/5 transition-colors"
         >
           + Add New Laptop

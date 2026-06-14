@@ -36,7 +36,7 @@ function BestMatchCard({ result }: { result: ScoredLaptop }) {
           <div className="flex items-center gap-2 rounded-full border border-[var(--primary)]/40 bg-[var(--primary)]/10 px-3 py-1">
             <TrophyIcon className="h-4 w-4 text-[var(--primary)]" />
             <span className="text-xs font-bold uppercase tracking-widest text-[var(--primary)]">
-              #1 Best Match
+              1st Best Match
             </span>
           </div>
           <ScoreRing score={result.totalScore} size={64} strokeWidth={5} />
@@ -122,7 +122,7 @@ function BestMatchCard({ result }: { result: ScoredLaptop }) {
 }
 
 // ── Runner-up card (ranks 2–5) — compact grid card ─────────────────────────
-const RANK_LABELS: Record<number, string> = { 1: '2nd', 2: '3rd', 3: '4th', 4: '5th' }
+const RANK_LABELS: Record<number, string> = { 0: '2nd', 1: '3rd', 2: '4th', 3: '5th' }
 
 function RunnerUpCard({ result, index }: { result: ScoredLaptop; index: number }) {
   const openQuickView = useLaptopQuickViewStore((s) => s.open)

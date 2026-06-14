@@ -18,7 +18,7 @@ export default async function InventoryPage() {
           <p className="mt-1 text-[#8B97A8]">{laptops.length} laptops</p>
         </div>
         <Link
-          href="/admin/inventory/new"
+          href="/onyami/inventory/new"
           className="rounded-xl bg-[#00D4FF] px-5 py-2.5 font-semibold text-black hover:bg-[#00bfe6] transition-colors"
         >
           + Add Laptop

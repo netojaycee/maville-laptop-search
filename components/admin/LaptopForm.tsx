@@ -169,7 +169,7 @@ export function LaptopForm({ laptop }: LaptopFormProps) {
 
     if (res.ok) {
       toast.success(laptop ? "Laptop updated!" : "Laptop created!");
-      router.push("/admin/inventory");
+      router.push("/onyami/inventory");
       router.refresh();
     } else {
       const err = await res.json();

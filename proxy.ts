@@ -2,22 +2,22 @@ import { auth } from '@/auth'
 import { NextResponse } from 'next/server'
 
 export default auth((req) => {
-  const isAdminRoute = req.nextUrl.pathname.startsWith('/admin')
-  const isLoginPage = req.nextUrl.pathname === '/admin/login'
+  const isAdminRoute = req.nextUrl.pathname.startsWith('/onyami')
+  const isLoginPage = req.nextUrl.pathname === '/onyami/login'
 
   if (isAdminRoute && !isLoginPage && !req.auth) {
-    const loginUrl = new URL('/admin/login', req.url)
+    const loginUrl = new URL('/onyami/login', req.url)
     loginUrl.searchParams.set('callbackUrl', req.nextUrl.pathname)
     return NextResponse.redirect(loginUrl)
   }
 
   if (isLoginPage && req.auth) {
-    return NextResponse.redirect(new URL('/admin', req.url))
+    return NextResponse.redirect(new URL('/onyami', req.url))
   }
 
   return NextResponse.next()
 })
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/onyami/:path*'],
 }

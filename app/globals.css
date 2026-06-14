@@ -51,82 +51,9 @@
   --radius-xl: calc(var(--radius) * 1.4);
 }
 
-/* === Maville Technologies Design Tokens (dark-first) === */
+/* === Maville Technologies Design Tokens (light default, dark optional) === */
 :root {
   /* Brand tokens */
-  --surface: #0F1318;
-  --surface-raised: #161B23;
-  --brand-border: #1E2530;
-  --text-primary: #F0F4FA;
-  --text-secondary: #8B97A8;
-  --brand-accent: #00D4FF;
-  --accent-warm: #FF6B35;
-  --brand-success: #00E676;
-  --brand-warning: #FFB300;
-
-  /* shadcn base (dark default) */
-  --background: #080B11;
-  --foreground: #F0F4FA;
-  --card: #0F1318;
-  --card-foreground: #F0F4FA;
-  --popover: #0F1318;
-  --popover-foreground: #F0F4FA;
-  --primary: #00D4FF;
-  --primary-foreground: #080B11;
-  --secondary: #161B23;
-  --secondary-foreground: #F0F4FA;
-  --muted: #161B23;
-  --muted-foreground: #8B97A8;
-  --accent: #161B23;
-  --accent-foreground: #F0F4FA;
-  --destructive: #FF6B35;
-  --border: #1E2530;
-  --input: #1E2530;
-  --ring: #00D4FF;
-  --radius: 0.625rem;
-  --sidebar: #0F1318;
-  --sidebar-foreground: #F0F4FA;
-  --sidebar-primary: #00D4FF;
-  --sidebar-primary-foreground: #080B11;
-  --sidebar-accent: #161B23;
-  --sidebar-accent-foreground: #F0F4FA;
-  --sidebar-border: #1E2530;
-  --sidebar-ring: #00D4FF;
-}
-
-/* Dark class mirrors root (next-themes applies "dark" class when dark mode active) */
-.dark {
-  --surface: #0F1318;
-  --surface-raised: #161B23;
-  --brand-border: #1E2530;
-  --text-primary: #F0F4FA;
-  --text-secondary: #8B97A8;
-  --brand-accent: #00D4FF;
-  --accent-warm: #FF6B35;
-  --brand-success: #00E676;
-  --brand-warning: #FFB300;
-  --background: #080B11;
-  --foreground: #F0F4FA;
-  --card: #0F1318;
-  --card-foreground: #F0F4FA;
-  --popover: #0F1318;
-  --popover-foreground: #F0F4FA;
-  --primary: #00D4FF;
-  --primary-foreground: #080B11;
-  --secondary: #161B23;
-  --secondary-foreground: #F0F4FA;
-  --muted: #161B23;
-  --muted-foreground: #8B97A8;
-  --accent: #161B23;
-  --accent-foreground: #F0F4FA;
-  --destructive: #FF6B35;
-  --border: #1E2530;
-  --input: #1E2530;
-  --ring: #00D4FF;
-}
-
-/* Light mode override */
-.light {
   --surface: #FFFFFF;
   --surface-raised: #EEF1F5;
   --brand-border: #D8DDE5;
@@ -137,6 +64,7 @@
   --brand-success: #00C853;
   --brand-warning: #F9A825;
 
+  /* shadcn base (light default) */
   --background: #F5F7FA;
   --foreground: #0D1117;
   --card: #FFFFFF;
@@ -155,6 +83,7 @@
   --border: #D8DDE5;
   --input: #D8DDE5;
   --ring: #0099BB;
+  --radius: 0.625rem;
   --sidebar: #FFFFFF;
   --sidebar-foreground: #0D1117;
   --sidebar-primary: #0099BB;
@@ -163,6 +92,46 @@
   --sidebar-accent-foreground: #0D1117;
   --sidebar-border: #D8DDE5;
   --sidebar-ring: #0099BB;
+}
+
+/* Dark mode override */
+.dark {
+  --surface: #0F1318;
+  --surface-raised: #161B23;
+  --brand-border: #1E2530;
+  --text-primary: #F0F4FA;
+  --text-secondary: #8B97A8;
+  --brand-accent: #00D4FF;
+  --accent-warm: #FF6B35;
+  --brand-success: #00E676;
+  --brand-warning: #FFB300;
+
+  --background: #080B11;
+  --foreground: #F0F4FA;
+  --card: #0F1318;
+  --card-foreground: #F0F4FA;
+  --popover: #0F1318;
+  --popover-foreground: #F0F4FA;
+  --primary: #00D4FF;
+  --primary-foreground: #080B11;
+  --secondary: #161B23;
+  --secondary-foreground: #F0F4FA;
+  --muted: #161B23;
+  --muted-foreground: #8B97A8;
+  --accent: #161B23;
+  --accent-foreground: #F0F4FA;
+  --destructive: #FF6B35;
+  --border: #1E2530;
+  --input: #1E2530;
+  --ring: #00D4FF;
+  --sidebar: #0F1318;
+  --sidebar-foreground: #F0F4FA;
+  --sidebar-primary: #00D4FF;
+  --sidebar-primary-foreground: #080B11;
+  --sidebar-accent: #161B23;
+  --sidebar-accent-foreground: #F0F4FA;
+  --sidebar-border: #1E2530;
+  --sidebar-ring: #00D4FF;
 }
 
 @layer base {
